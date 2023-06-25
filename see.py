@@ -11,7 +11,7 @@ rows = cursor.fetchall()
 
 # 創建表格
 table = PrettyTable()
-table.field_names = ["ID", "Money", "Count"]
+table.field_names = ["使用者ID", "餘額", "字數計算"]
 
 # 填充資料到表格
 for row in rows:
