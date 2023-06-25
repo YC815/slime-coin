@@ -1,25 +1,25 @@
 import sqlite3
 from prettytable import PrettyTable
 
-# 建立資料庫連線
-conn = sqlite3.connect('user_balances.db')
+# 連接到資料庫
+conn = sqlite3.connect('bank.db')
 cursor = conn.cursor()
 
-# 執行 SQL 查詢
-cursor.execute('SELECT * FROM balances')
-results = cursor.fetchall()
+# 執行查詢語句
+cursor.execute("SELECT * FROM users")
+rows = cursor.fetchall()
 
-# 建立表格
+# 創建表格
 table = PrettyTable()
-table.field_names = ['User ID', 'Balance']
+table.field_names = ["ID", "Money", "Count"]
 
-# 加入資料到表格
-for result in results:
-    table.add_row(result)
+# 填充資料到表格
+for row in rows:
+    table.add_row(row)
 
 # 顯示表格
 print(table)
 
-# 關閉資料庫連線
+# 關閉資料庫連接
 cursor.close()
 conn.close()
