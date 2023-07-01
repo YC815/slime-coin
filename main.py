@@ -15,11 +15,11 @@ intents = discord.Intents.all()
 bot = discord.Bot(intents=intents)
 
 # 連接到資料庫
-conn = sqlite3.connect("bank.db")
-cursor = conn.cursor()
-cursor.execute(
-    "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
-)
+# conn = sqlite3.connect("bank.db")
+# cursor = conn.cursor()
+# cursor.execute(
+#     "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+# )
 
 
 # 程式區
@@ -42,6 +42,11 @@ async def help(ctx):
 @bot.event
 async def on_message(message):
     if message.author.bot == False:
+        conn = sqlite3.connect("bank.db")
+        cursor = conn.cursor()
+        cursor.execute(
+           "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+        )
         # print(message.content)
         # print("get message from", message.author.name)
 
@@ -78,21 +83,19 @@ async def on_message(message):
             )
             conn.commit()
             print("已成功創建新使用者的資料表。")
-
+        # 關閉資料庫連接
+        cursor.close()
+        conn.close()
     # await bot.process_commands(message)
-
-
-
-@bot.event
-async def on_disconnect():
-    # 關閉資料庫連接和游標
-    cursor.close()
-    conn.close()
-
 
 # @commands.has_permissions(administrator=True)
 @bot.command(description="顯示金錢表格")
 async def see(ctx):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
     # 執行查詢語句
     cursor.execute("SELECT * FROM users")
     rows = cursor.fetchall()
@@ -106,10 +109,18 @@ async def see(ctx):
         table.add_row(row)
 
     await ctx.respond(f"```\n{table}\n```")
+    # 關閉資料庫連接
+    cursor.close()
+    conn.close()
 
 
 @bot.command(description="查看自己的餘額")
 async def mymoney(ctx, user):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
     print(user)
     user = re.sub(r"<@|>", "", user)
     cursor.execute("SELECT money FROM users WHERE id=?", (user,))
@@ -149,6 +160,11 @@ async def buy(ctx):
 
 @bot.command(description="匯款")
 async def pay(ctx, user, money):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
     # 獲取執行指令的使用者ID
     sender_id = ctx.author.id
     
@@ -206,10 +222,18 @@ async def pay(ctx, user, money):
     except Exception as e:
         await ctx.respond("匯款失敗，請稍後再試。")
         print(str(e))
+    # 關閉資料庫連接
+    cursor.close()
+    conn.close()
 
 @commands.has_permissions(administrator=True)
 @bot.command()
 async def set(ctx, user, money):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
     # 獲取目標使用者ID
     user_id = re.sub(r"<@|>", "", user)
 
@@ -235,10 +259,18 @@ async def set(ctx, user, money):
     conn.commit()
 
     await ctx.respond(f"已成功設定使用者 <@{user_id}> 的餘額為 {money} 元。")
+    # 關閉資料庫連接
+    cursor.close()
+    conn.close()
 
 @commands.has_permissions(administrator=True)
 @bot.command(description="增加使用者餘額")
 async def add(ctx, user, money):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
     # 獲取執行指令的使用者ID
     sender_id = ctx.author.id
 
@@ -269,11 +301,19 @@ async def add(ctx, user, money):
     conn.commit()
 
     await ctx.respond(f"已成功增加使用者 <@{user_id}> 的餘額 {money} 元。")
+    # 關閉資料庫連接
+    cursor.close()
+    conn.close()
 
 
 @commands.has_permissions(administrator=True)
 @bot.command(description="減少使用者餘額")
 async def minus(ctx, user, money):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
     # 獲取執行指令的使用者ID
     sender_id = ctx.author.id
 
@@ -308,6 +348,9 @@ async def minus(ctx, user, money):
     conn.commit()
 
     await ctx.respond(f"已成功減少使用者 <@{user_id}> 的餘額 {money} 元。")
+    # 關閉資料庫連接
+    cursor.close()
+    conn.close()
 
 
 bot.run(os.getenv("TOKEN"))
