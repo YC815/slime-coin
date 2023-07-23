@@ -8,6 +8,7 @@ import re
 from prettytable import PrettyTable
 import re
 import json
+from discord.ui import Select, View
 
 load_dotenv()
 
@@ -139,7 +140,6 @@ async def menu(ctx):
     embed.add_field(name="商品名", value="", inline=True)
     embed.add_field(name="商品說明", value="", inline=True)
     embed.add_field(name="價格", value="", inline=True)
-
     for key, value in data.items():
         name = value["name"]
         description = value["description"]
@@ -156,7 +156,21 @@ async def menu(ctx):
 
 @bot.command(description="購買商品")
 async def buy(ctx):
-    await ctx.respond("開發中")
+    select = Select(options=[], placeholder="選擇一個商品")
+    with open("products.json", "r") as f:
+        data = json.load(f)
+    
+    for key, value in data.items():
+        select.add_option(label=value["name"], emoji=value["emoji"], description=value["description"] + " " + value["price"] + "元")
+    view = View()
+    view.add_item(select)
+    async def my_callback(interaction):
+        if select.values[0] == "熱情招呼":
+            await interaction.response.send_message("早安!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    select.callback = my_callback
+    await ctx.respond(view=view)
+    print(ctx)
+
 
 @bot.command(description="匯款")
 async def pay(ctx, user, money):

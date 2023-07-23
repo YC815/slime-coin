@@ -2,11 +2,7 @@
     "1":{
         "name": "熱情招呼",
         "description": "我會跟你打招呼",
-        "price": "5"
-    },
-    "2":{
-        "name": "城市單打",
-        "description": "你會跟機器人決鬥，然後你會贏",
-        "price": "10"
+        "price": "5",
+        "emoji": "🖐️"
     }
 }
