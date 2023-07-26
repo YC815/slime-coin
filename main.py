@@ -185,6 +185,20 @@ async def buy(ctx):
             conn.commit()
             cursor.close()
             conn.close()
+        if select.values[0] == "黏液咖啡":
+            await interaction.response.send_message(f":coffee:黏液咖啡已送到")
+            new_money = current_money - 50
+            cursor.execute("UPDATE users SET money=? WHERE id=?", (new_money, user_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+        if select.values[0] == "黏液金幣":
+            await interaction.response.send_message(f":coin:黏液金幣已送到")
+            new_money = current_money - 500
+            cursor.execute("UPDATE users SET money=? WHERE id=?", (new_money, user_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
 
     select.callback = my_callback
     await ctx.respond(view=view)
