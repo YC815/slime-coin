@@ -179,7 +179,7 @@ async def buy(ctx):
     view.add_item(select)
     async def my_callback(interaction):
         if select.values[0] == "熱情招呼":
-            await interaction.response.send_message("早安!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            await interaction.response.send_message(f"早安{'!'*100}")
             new_money = current_money - 5
             cursor.execute("UPDATE users SET money=? WHERE id=?", (new_money, user_id))
             conn.commit()
