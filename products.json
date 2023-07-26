@@ -5,4 +5,16 @@
         "price": "5",
         "emoji": "🖐️"
     }
+    "2":{
+        "name": "黏液咖啡",
+        "description": "我會送黏液咖啡",
+        "price": "50",
+        "emoji": "☕"
+    }
+    "3":{
+        "name": "黏液金幣",
+        "description": "我會送黏液金幣",
+        "price": "500",
+        "emoji": "🪙"
+    }
 }
