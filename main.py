@@ -63,7 +63,7 @@ async def on_message(message):
             count = user_data[1]
 
             # 更新 count 值
-            count += len(message.content)
+            count += 1
             cursor.execute("UPDATE users SET count=? WHERE id=?", (count, author_id))
 
             if count >= 30:
