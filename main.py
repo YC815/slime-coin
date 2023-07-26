@@ -156,17 +156,36 @@ async def menu(ctx):
 
 @bot.command(description="購買商品")
 async def buy(ctx):
+    conn = sqlite3.connect("bank.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, money INTEGER, count INTEGER)"
+    )
+    user_id = ctx.author.id
+    print(user_id)
+    cursor.execute("SELECT * FROM users WHERE id=?", (user_id,))
+    user_data = cursor.fetchone()
+    current_money = user_data[1]
+    if current_money <= 0:
+        await ctx.respond("餘額不足")
+        return
     select = Select(options=[], placeholder="選擇一個商品")
     with open("products.json", "r") as f:
         data = json.load(f)
     
     for key, value in data.items():
-        select.add_option(label=value["name"], emoji=value["emoji"], description=value["description"] + " " + value["price"] + "元")
+        select.add_option(label=str(value["name"]), emoji=str(value["emoji"]), description=str(value["description"]) + " " + str(value["price"]) + "元")
     view = View()
     view.add_item(select)
     async def my_callback(interaction):
         if select.values[0] == "熱情招呼":
             await interaction.response.send_message("早安!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            new_money = current_money - 5
+            cursor.execute("UPDATE users SET money=? WHERE id=?", (new_money, user_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
     select.callback = my_callback
     await ctx.respond(view=view)
     print(ctx)
